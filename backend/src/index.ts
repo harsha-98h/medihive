@@ -10,19 +10,26 @@ import userRoutes from "./routes/userRoutes";
 import doctorRoutes from "./routes/doctorRoutes";
 import appointmentRoutes from "./routes/appointmentRoutes";
 
-
-
-
-
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://medihive-nine.vercel.app"
+];
+
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true
   })
 );
@@ -39,19 +46,17 @@ app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 
-
-
 app.get("/health", (req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 
-// Global error handler
 app.use(
   (err: any, req: Request, res: Response, next: NextFunction) => {
     console.error("Unhandled error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 );
+
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "MediHive API is running" });
 });
@@ -64,4 +69,3 @@ app.listen(PORT, async () => {
     console.error("Database connection failed:", err);
   }
 });
-
