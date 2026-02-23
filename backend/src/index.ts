@@ -61,3 +61,7 @@ app.listen(PORT, async () => {
     console.error("Database connection failed:", err);
   }
 });
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "MediHive API is running" });
+});
+
