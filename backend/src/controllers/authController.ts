@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../database/db";
 
-const ACCESS_TOKEN_EXPIRES_IN = "15m";
+const ACCESS_TOKEN_EXPIRES_IN = "7d";
 
 function signToken(payload: object) {
   if (!process.env.JWT_SECRET) {
