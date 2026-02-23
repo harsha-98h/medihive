@@ -52,6 +52,9 @@ app.use(
     res.status(500).json({ message: "Internal server error" });
   }
 );
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "MediHive API is running" });
+});
 
 app.listen(PORT, async () => {
   console.log(`Backend running on http://localhost:${PORT}`);
@@ -60,8 +63,5 @@ app.listen(PORT, async () => {
   } catch (err) {
     console.error("Database connection failed:", err);
   }
-});
-app.get("/", (req, res) => {
-  res.json({ status: "ok", message: "MediHive API is running" });
 });
 
