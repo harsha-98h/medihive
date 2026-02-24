@@ -154,7 +154,7 @@ export default function HomePage() {
               ) : (
                 <ul className="space-y-2">
                   {upcoming.slice(0, 3).map((a: PatientAppointment) => (
-                    /60 px-3 py-2 text-xs">
+                    <li className="rounded-lg bg-slate-800/60 px-3 py-2 text-xs">
                       <p className="font-medium text-slate-100">Dr. {a.doctor_first_name} {a.doctor_last_name}</p>
                       <p className="text-slate-400">{a.specialty}</p>
                       <p className="text-teal-300">{formatDate(a.appointment_time)}</p>
