@@ -1,10 +1,10 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { authenticate } from "../middleware/authMiddleware";
+import { getMe, updateMe } from "../controllers/userController";
 
 const router = Router();
 
-router.get("/me", authenticate, (req: Request, res: Response) => {
-  res.json({ user: req.user });
-});
+router.get("/me", authenticate, getMe);
+router.put("/me", authenticate, updateMe);
 
 export default router;

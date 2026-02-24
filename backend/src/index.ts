@@ -17,10 +17,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// behind Railway / proxies
+app.set("trust proxy", 1);
+
 const allowedOrigins = [
   "http://localhost:3000",
   "https://medihive-nine.vercel.app",
-  "https://medihive-nine.vercel.app/admin"
+  "https://medihive-nine.vercel.app/admin",
 ];
 
 app.use(helmet());
@@ -33,7 +36,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true
+    credentials: true,
   })
 );
 app.use(express.json({ limit: "10mb" }));
@@ -41,9 +44,12 @@ app.use(compression());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use(limiter);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
