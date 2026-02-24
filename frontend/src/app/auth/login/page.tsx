@@ -31,8 +31,12 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
       <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
-        <h1 className="mb-2 text-2xl font-semibold text-slate-50">Sign in to MediHive</h1>
-        <p className="mb-6 text-sm text-slate-400">Enter your email and password to continue.</p>
+        <h1 className="mb-2 text-2xl font-semibold text-slate-50">
+          Sign in to MediHive
+        </h1>
+        <p className="mb-6 text-sm text-slate-400">
+          Enter your email and password to continue.
+        </p>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm text-slate-200">Email</label>
@@ -45,7 +49,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-slate-200">Password</label>
+            <label className="mb-1 block text-sm text-slate-200">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -54,6 +60,13 @@ export default function LoginPage() {
               className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-50 outline-none focus:border-teal-500"
             />
           </div>
+
+          <p className="mt-1 text-right text-xs">
+            <a href="/auth/forgot" className="text-teal-400 underline">
+              Forgot password?
+            </a>
+          </p>
+
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button
             type="submit"
@@ -64,7 +77,9 @@ export default function LoginPage() {
           </button>
           <p className="text-center text-xs text-slate-400">
             No account?{" "}
-            <a href="/auth/register" className="text-teal-400 underline">Register here</a>
+            <a href="/auth/register" className="text-teal-400 underline">
+              Register here
+            </a>
           </p>
         </form>
       </div>
