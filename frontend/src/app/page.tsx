@@ -100,7 +100,7 @@ export default function HomePage() {
               ) : (
                 <ul className="space-y-3">
                   {upcoming.map((a: DoctorAppointment) => (
-                    /60 px-4 py-3">
+                    <li className="rounded-lg bg-slate-800/60 px-4 py-3">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-slate-100">
@@ -124,7 +124,7 @@ export default function HomePage() {
                 </h2>
                 <ul className="space-y-3">
                   {past.map((a: DoctorAppointment) => (
-                    /60 px-4 py-3">
+                    <li className="rounded-lg bg-slate-800/60 px-4 py-3">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-slate-100">
