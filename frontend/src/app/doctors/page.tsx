@@ -149,7 +149,7 @@ export default function DoctorsPage() {
                 {bookingDoctor.specialty}
               </p>
               <div className="mb-4">
-                abel className="mb-1 block text-xs text-slate-400">
+                <label className="mb-1 block text-xs text-slate-400">
                   Select Date
                 </label>
                 <input
@@ -161,7 +161,7 @@ export default function DoctorsPage() {
                 />
               </div>
               <div className="mb-6">
-                abel className="mb-2 block text-xs text-slate-400">
+                <label className="mb-2 block text-xs text-slate-400">
                   Select Time Slot
                 </label>
                 <div className="grid grid-cols-4 gap-2">
