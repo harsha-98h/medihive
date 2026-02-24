@@ -39,3 +39,14 @@ CREATE TABLE IF NOT EXISTS appointments (
   updated_at       TIMESTAMP DEFAULT NOW(),
   UNIQUE (patient_id, appointment_time)
 );
+
+CREATE TABLE IF NOT EXISTS doctor_ratings (
+  rating_id      SERIAL PRIMARY KEY,
+  doctor_id      INT NOT NULL REFERENCES doctor_profiles(doctor_id) ON DELETE CASCADE,
+  patient_id     INT NOT NULL REFERENCES patient_profiles(patient_id) ON DELETE CASCADE,
+  appointment_id INT NOT NULL REFERENCES appointments(appointment_id) ON DELETE CASCADE,
+  rating         INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment        TEXT DEFAULT NULL,
+  created_at     TIMESTAMP DEFAULT NOW(),
+  UNIQUE (appointment_id)
+);
