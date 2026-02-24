@@ -173,7 +173,7 @@ export default function DoctorsPage() {
                 <p className="mb-4 text-xs text-slate-500">📍 {bookingDoctor.address}</p>
               )}
               <div className="mb-4">
-                abel className="mb-1 block text-xs text-slate-400">Select Date</label>
+                <label className="mb-1 block text-xs text-slate-400">Select Date</label>
                 <input
                   type="date"
                   min={today}
@@ -183,7 +183,7 @@ export default function DoctorsPage() {
                 />
               </div>
               <div className="mb-6">
-                abel className="mb-2 block text-xs text-slate-400">Select Time Slot</label>
+                <label className="mb-2 block text-xs text-slate-400">Select Time Slot</label>
                 <div className="grid grid-cols-4 gap-2">
                   {timeSlots.map((t) => (
                     <button
