@@ -10,6 +10,8 @@ type Doctor = {
   specialty: string;
   phone_number: string | null;
   address: string | null;
+  avg_rating?: number | null;
+  rating_count?: number | null;
 };
 
 export default function DoctorsPage() {
@@ -165,9 +167,9 @@ export default function DoctorsPage() {
         {bookingDoctor && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
             <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-              <h2 className="mb-1 text-lg font-semibold">Book Appointment</h2>
+              <h2 className="mb-1 text-lg font-semibold">BooAppointment</h2>
               <p className="mb-4 text-sm text-slate-400">
-                . {bookingDoctor.first_name} {bookingDoctor.last_name} — {bookingDoctor.specialty}
+                Dr. {bookingDoctor.first_name} {bookingDoctor.last_name} — {bookingDoctor.specialty}
               </p>
               {bookingDoctor.address && (
                 <p className="mb-4 text-xs text-slate-500">📍 {bookingDoctor.address}</p>
@@ -184,10 +186,10 @@ export default function DoctorsPage() {
               </div>
               <div className="mb-6">
                 <label className="mb-2 block text-xs text-slate-400">Select Time Slot</label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="griid-cols-4 gap-2">
                   {timeSlots.map((t) => (
                     <button
-                  key={t}
+                      key={t}
                       onClick={() => setSelectedTime(t)}
                       className={`rounded-lg border px-2 py-1.5 text-xs transition ${
                         selectedTime === t
@@ -237,12 +239,21 @@ export default function DoctorsPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold">Dr. {doc.first_name} {doc.last_name}</h2>
+                    <h2 className="text-lg font-semibold">
+                      Dr. {doc.first_name} {doc.last_name}
+                    </h2>
                     <p className="text-sm text-teal-300">{doc.specialty}</p>
+                    {doc.avg_rating != null && doc.rating_count != null && doc.rating_count > 0 && (
+                      <p className="mt-1 text-xs text-yellow-300">
+                        ⭐ {doc.avg_rating.toFixed(1)} ({doc.rating_count})
+                      </p>
+                    )}
                   </div>
-                  <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">Available</span>
+                  <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">
+                    Available
+                  </span>
                 </div>
-                <div className="mt-3 space-y-1 text-sm text-slate-400">
+                <div className="mt-3 space-y-1 text- text-slate-400">
                   {doc.phone_number && <p>📞 {doc.phone_number}</p>}
                   {doc.address && <p>📍 {doc.address}</p>}
                 </div>
