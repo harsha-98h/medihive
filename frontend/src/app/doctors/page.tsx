@@ -17,6 +17,7 @@ export default function DoctorsPage() {
   const [filtered, setFiltered] = useState<Doctor[]>([]);
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -55,10 +56,26 @@ export default function DoctorsPage() {
     if (specialty) {
       results = results.filter((d) => d.specialty === specialty);
     }
+    if (city) {
+      results = results.filter((d) =>
+        d.address?.toLowerCase().includes(city.toLowerCase())
+      );
+    }
     setFiltered(results);
-  }, [search, specialty, doctors]);
+  }, [search, specialty, city, doctors]);
 
   const specialties = [...new Set(doctors.map((d) => d.specialty))].sort();
+
+  const cities = [...new Set(
+    doctors
+      .map((d) => {
+        if (!d.address) return null;
+        const parts = d.address.split(",");
+        return parts[parts.length - 1].trim();
+      })
+      .filter(Boolean)
+  )].sort() as string[];
+
   const today = new Date().toISOString().split("T")[0];
   const timeSlots = [
     "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -80,15 +97,10 @@ export default function DoctorsPage() {
       const appointmentTime = new Date(`${selectedDate}T${selectedTime}:00`);
       await api.post(
         "/appointments",
-        {
-          doctor_id: bookingDoctor.doctor_id,
-          appointment_time: appointmentTime.toISOString(),
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { doctor_id: bookingDoctor.doctor_id, appointment_time: appointmentTime.toISOString() },
+        { headers: { Authorization: "Bearer " + token } }
       );
-      setSuccess(
-        `Appointment booked with Dr. ${bookingDoctor.first_name} ${bookingDoctor.last_name}!`
-      );
+      setSuccess(`Appointment booked with Dr. ${bookingDoctor.first_name} ${bookingDoctor.last_name}!`);
       setBookingDoctor(null);
       setSelectedDate("");
       setSelectedTime("");
@@ -122,22 +134,32 @@ export default function DoctorsPage() {
           >
             <option value="">All specialties</option>
             {specialties.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-50 outline-none focus:border-teal-500"
+          >
+            <option value="">All cities</option>
+            {cities.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
 
+        <div className="mb-4 text-xs text-slate-400">
+          Showing {filtered.length} of {doctors.length} doctors
+          {city && <span className="ml-2 rounded-full bg-teal-500/10 px-2 py-0.5 text-teal-300">📍 {city}</span>}
+          {specialty && <span className="ml-2 rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-300">{specialty}</span>}
+        </div>
+
         {success && (
-          <div className="mb-4 rounded-lg bg-teal-500/10 px-4 py-3 text-sm text-teal-300">
-            {success}
-          </div>
+          <div className="mb-4 rounded-lg bg-teal-500/10 px-4 py-3 text-sm text-teal-300">{success}</div>
         )}
         {error && (
-          <div className="mb-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
-            {error}
-          </div>
+          <div className="mb-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</div>
         )}
 
         {bookingDoctor && (
@@ -145,13 +167,13 @@ export default function DoctorsPage() {
             <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
               <h2 className="mb-1 text-lg font-semibold">Book Appointment</h2>
               <p className="mb-4 text-sm text-slate-400">
-                Dr. {bookingDoctor.first_name} {bookingDoctor.last_name} —{" "}
-                {bookingDoctor.specialty}
+                . {bookingDoctor.first_name} {bookingDoctor.last_name} — {bookingDoctor.specialty}
               </p>
+              {bookingDoctor.address && (
+                <p className="mb-4 text-xs text-slate-500">📍 {bookingDoctor.address}</p>
+              )}
               <div className="mb-4">
-                <label className="mb-1 block text-xs text-slate-400">
-                  Select Date
-                </label>
+                abel className="mb-1 block text-xs text-slate-400">Select Date</label>
                 <input
                   type="date"
                   min={today}
@@ -161,13 +183,11 @@ export default function DoctorsPage() {
                 />
               </div>
               <div className="mb-6">
-                <label className="mb-2 block text-xs text-slate-400">
-                  Select Time Slot
-                </label>
+                abel className="mb-2 block text-xs text-slate-400">Select Time Slot</label>
                 <div className="grid grid-cols-4 gap-2">
                   {timeSlots.map((t) => (
                     <button
-                      key={t}
+                  key={t}
                       onClick={() => setSelectedTime(t)}
                       className={`rounded-lg border px-2 py-1.5 text-xs transition ${
                         selectedTime === t
@@ -182,11 +202,7 @@ export default function DoctorsPage() {
               </div>
               <div className="flex gap-3">
                 <button
-                  onClick={() => {
-                    setBookingDoctor(null);
-                    setSelectedDate("");
-                    setSelectedTime("");
-                  }}
+                  onClick={() => { setBookingDoctor(null); setSelectedDate(""); setSelectedTime(""); }}
                   className="flex-1 rounded-lg border border-slate-700 py-2 text-sm text-slate-400 hover:text-slate-200"
                 >
                   Cancel
@@ -206,7 +222,12 @@ export default function DoctorsPage() {
         {loading ? (
           <p className="text-slate-400">Loading doctors...</p>
         ) : filtered.length === 0 ? (
-          <p className="text-slate-400">No doctors found.</p>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-6 text-center text-sm text-slate-400">
+            No doctors found matching your filters.{" "}
+            <button onClick={() => { setSearch(""); setSpecialty(""); setCity(""); }} className="text-teal-400 underline">
+              Clear filters
+            </button>
+          </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             {filtered.map((doc) => (
@@ -216,28 +237,20 @@ export default function DoctorsPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold">
-                      Dr. {doc.first_name} {doc.last_name}
-                    </h2>
+                    <h2 className="text-lg font-semibold">Dr. {doc.first_name} {doc.last_name}</h2>
                     <p className="text-sm text-teal-300">{doc.specialty}</p>
                   </div>
-                  <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">
-                    Available
-                  </span>
+                  <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">Available</span>
                 </div>
                 <div className="mt-3 space-y-1 text-sm text-slate-400">
-                  {doc.phone_number && <p>Phone: {doc.phone_number}</p>}
-                  {doc.address && <p>Location: {doc.address}</p>}
+                  {doc.phone_number && <p>📞 {doc.phone_number}</p>}
+                  {doc.address && <p>📍 {doc.address}</p>}
                 </div>
                 <button
-                  onClick={() => {
-                    setBookingDoctor(doc);
-                    setSuccess(null);
-                    setError(null);
-                  }}
+                  onClick={() => { setBookingDoctor(doc); setSuccess(null); setError(null); }}
                   className="mt-4 w-full rounded-full bg-teal-500 py-2 text-sm font-medium text-slate-950 transition hover:bg-teal-400"
                 >
-                  Book Appointment
+                  Book Appoint
                 </button>
               </div>
             ))}
