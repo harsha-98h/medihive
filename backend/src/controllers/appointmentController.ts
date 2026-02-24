@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../database/db";
+import { sendAppointmentConfirmation } from "../services/emailService";
 
 export const createAppointment = async (req: Request, res: Response) => {
   try {
@@ -35,7 +36,31 @@ export const createAppointment = async (req: Request, res: Response) => {
       [patient_id, doctor_id, appointment_time]
     );
 
-    return res.status(201).json({ appointment: apptResult.rows[0] });
+    const appointment = apptResult.rows[0];
+    try {
+      const patientInfo = await pool.query(
+        "SELECT p.first_name, p.last_name, u.email FROM patient_profiles p JOIN users u ON p.user_id = u.user_id WHERE p.patient_id = $1",
+        [patient_id]
+      );
+      const doctorInfo = await pool.query(
+        "SELECT first_name, last_name, specialty FROM doctor_profiles WHERE doctor_id = $1",
+        [doctor_id]
+      );
+      if (patientInfo.rows[0] && doctorInfo.rows[0]) {
+        const p = patientInfo.rows[0];
+        const d = doctorInfo.rows[0];
+        await sendAppointmentConfirmation({
+          patientEmail: p.email,
+          patientName: p.first_name + " " + p.last_name,
+          doctorName: d.first_name + " " + d.last_name,
+          specialty: d.specialty,
+          appointmentTime: appointment.appointment_time
+        });
+      }
+    } catch (emailErr) {
+      console.error("Email sending failed (non-critical):", emailErr);
+    }
+    return res.status(201).json({ appointment });
   } catch (err: any) {
     console.error("createAppointment error:", err);
 
