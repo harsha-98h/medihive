@@ -35,7 +35,7 @@ export default function LoginPage() {
         <p className="mb-6 text-sm text-slate-400">Enter your email and password to continue.</p>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            abel className="mb-1 block text-sm text-slate-200">Email</label>
+            <label className="mb-1 block text-sm text-slate-200">Email</label>
             <input
               type="email"
               value={email}
@@ -45,7 +45,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            abel className="mb-1 block text-sm text-slate-200">Password</label>
+            <label className="mb-1 block text-sm text-slate-200">Password</label>
             <input
               type="password"
               value={password}
