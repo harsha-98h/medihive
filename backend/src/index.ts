@@ -5,6 +5,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import compression from "compression";
 import { testConnection } from "./database/db";
+import { runMigrations } from "./database/migrate";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import doctorRoutes from "./routes/doctorRoutes";
@@ -64,6 +65,7 @@ app.get("/", (req, res) => {
 app.listen(PORT, async () => {
   console.log(`Backend running on http://localhost:${PORT}`);
   try {
+    await runMigrations();
     await testConnection();
   } catch (err) {
     console.error("Database connection failed:", err);

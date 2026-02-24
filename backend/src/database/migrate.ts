@@ -1,15 +1,9 @@
+import { pool } from "./db";
 import fs from "fs";
 import path from "path";
-import { pool } from "./db";
 
-async function migrate() {
+export async function runMigrations() {
   const sql = fs.readFileSync(path.join(__dirname, "../../src/database/schema.sql"), "utf8");
   await pool.query(sql);
-  console.log("Migration successful — all tables created!");
-  await pool.end();
+  console.log("Migrations ran successfully");
 }
-
-migrate().catch((err) => {
-  console.error("Migration failed:", err);
-  process.exit(1);
-});
