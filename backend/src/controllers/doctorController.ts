@@ -33,30 +33,42 @@ export const listDoctors = async (req: Request, res: Response) => {
   try {
     const { specialty, search } = req.query;
 
-    const conditions: string[] = ["deleted_at IS NULL"];
+    const conditions: string[] = ["d.deleted_at IS NULL"];
     const values: any[] = [];
     let index = 1;
 
     if (specialty) {
-      conditions.push(`LOWER(specialty) = LOWER($${index++})`);
+      conditions.push(`LOWER(d.specialty) = LOWER($${index++})`);
       values.push(specialty);
     }
 
     if (search) {
       conditions.push(
-        `(LOWER(first_name) LIKE LOWER($${index}) OR LOWER(last_name) LIKE LOWER($${index}))`
+        `(LOWER(d.first_name) LIKE LOWER($${index}) OR LOWER(d.last_name) LIKE LOWER($${index}))`
       );
       values.push(`%${search}%`);
       index++;
     }
 
-    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+    const whereClause = conditions.length
+      ? `WHERE ${conditions.join(" AND ")}`
+      : "";
 
     const result = await pool.query(
-      `SELECT doctor_id, first_name, last_name, specialty, phone_number, address
-       FROM doctor_profiles
+      `SELECT 
+         d.doctor_id,
+         d.first_name,
+         d.last_name,
+         d.specialty,
+         d.phone_number,
+         d.address,
+         COALESCE(AVG(r.rating), 0) AS avg_rating,
+         COUNT(r.rating_id)       AS rating_count
+       FROM doctor_profiles d
+       LEFT JOIN doctor_ratings r ON r.doctor_id = d.doctor_id
        ${whereClause}
-       ORDER BY last_name ASC`,
+       GROUP BY d.doctor_id, d.first_name, d.last_name, d.specialty, d.phone_number, d.address
+       ORDER BY d.last_name ASC`,
       values
     );
 
