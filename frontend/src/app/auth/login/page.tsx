@@ -53,7 +53,7 @@ export default function LoginPage() {
             </div>
             <div className="rounded-xl bg-blue-500/10 px-3 py-2 text-blue-300">
               <div className="text-lg">🩺</div>
-              <div class="font-medium">Doctor</div>
+              <div className="font-medium">Doctor</div>
               <div className="text-slate-400">Manage visits</div>
             </div>
             <div className="rounded-xl bg-purple-500/10 px-3 py-2 text-purple-300">
