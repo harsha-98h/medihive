@@ -6,12 +6,12 @@ import { api } from "@/lib/api";
 
 export default function AdminPanel() {
   const router = useRouter();
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [tab, setTab] = useState("overview");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
