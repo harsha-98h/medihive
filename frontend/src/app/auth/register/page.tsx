@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const [role, setRole] = useState("patient");
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -95,7 +95,7 @@ export default function RegisterPage() {
                   type="text"
                   required
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
                   placeholder="John"
                   className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-teal-500 transition"
                 />
@@ -106,7 +106,7 @@ export default function RegisterPage() {
                   type="text"
                   required
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
                   placeholder="Doe"
                   className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-teal-500 transition"
                 />
@@ -119,7 +119,7 @@ export default function RegisterPage() {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-teal-500 transition"
               />
@@ -131,7 +131,7 @@ export default function RegisterPage() {
                 type="password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-teal-500 transition"
               />

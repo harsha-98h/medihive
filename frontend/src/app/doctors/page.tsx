@@ -108,14 +108,14 @@ export default function DoctorsPage() {
             type="text"
             placeholder="Search by name or specialty..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             className="flex-1 rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-teal-500 transition backdrop-blur"
           />
-          <select value={specialty} onChange={(e) => setSpecialty(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
+          <select value={specialty} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSpecialty(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
             <option value="">All specialties</option>
             {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
-          <select value={city} onChange={(e) => setCity(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
+          <select value={city} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCity(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
             <option value="">All cities</option>
             {cities.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
@@ -139,7 +139,7 @@ export default function DoctorsPage() {
               {bookingDoctor.address && <p className="mb-4 text-xs tt-slate-500">📍 {bookingDoctor.address}</p>}
               <div className="mb-4">
                 <label className="mb-1.5 block text-xs font-medium text-slate-400">Select Date</label>
-                <input type="date" min={today} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500" />
+                <input type="date" min={today} value={selectedDate} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedDate(e.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500" />
               </div>
               <div className="mb-6">
                 <label className="mb-2 block text-xs font-medium text-slate-400">Select Time Slot</label>
