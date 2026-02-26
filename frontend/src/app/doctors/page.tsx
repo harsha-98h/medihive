@@ -146,7 +146,7 @@ export default function DoctorsPage() {
                 <div className="flex flex-wrap gap-2">
                   {timeSlots.map((t) => (
                     <button key={t} onClick={() => setSelectedTime(t)} className={"rounded-lg border px-2.5 py-1.5 text-xs transition " + (selectedTime === t ? "border-teal-500 bg-teal-500/20 text-teal-300" : "border-slate-700 text-slate-400 hover:border-teal-600")}>
-                      }
+                      {t}
                     </button>
                   ))}
                 </div>

@@ -108,7 +108,7 @@ export default function AdminPanel() {
                   <div key={a.appointment_id} className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm">
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-slate-100">
-                        {a.patient_first_name} {a.patient_last_name} → Dr. {a.doctor_first_na {a.doctor_last_name}
+                        {a.patient_first_name} {a.patient_last_name} → Dr. {a.doctor_first_name} {a.doctor_last_name}
                       </p>
                       <span className={"rounded-full px-2 py-0.5 text-xs " + (a.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : a.status === "done" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
                         {a.status}
