@@ -88,7 +88,7 @@ export default function DoctorsPage() {
       toast.success(`Booked with Dr. ${bookingDoctor.first_name} ${bookingDoctor.last_name}!`);
       setBookingDoctor(null); setSelectedDate(""); setSelectedTime("");
       router.push("/appointments");
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err?.response?.data?.message || "Booking failed.");
     } finally {
       setBooking(false);

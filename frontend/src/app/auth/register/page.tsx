@@ -38,7 +38,7 @@ export default function RegisterPage() {
       if (user.role === "doctor") router.push("/doctor");
       else if (user.role === "admin") router.push("/admin");
       else router.push("/");
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err?.response?.data?.message || "Registration failed.");
     } finally {
       setLoading(false);
