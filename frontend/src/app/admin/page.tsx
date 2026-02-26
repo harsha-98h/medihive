@@ -32,7 +32,7 @@ export default function AdminPanel() {
       .finally(() => setLoading(false));
   }, []);
 
-  const formatDate = (iso) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+  const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">

@@ -52,7 +52,7 @@ export default function DoctorDashboard() {
     finally { setCancellingId(null); }
   };
 
-  const formatDate = (iso) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+  const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
   const scheduled = appointments.filter((a) => a.status === "scheduled");
   const done = appointments.filter((a) => a.status === "done");
   const cancelled = appointments.filter((a) => a.status === "canceled");
