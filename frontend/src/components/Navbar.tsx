@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 

@@ -10,10 +10,10 @@ export default function DoctorDashboard() {
   const router = useRouter();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [markingId, setMarkingId] = useState(null);
-  const [cancellingId, setCancellingId] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [markingId, setMarkingId] = useState<number | null>(null);
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   const fetchAppointments = async () => {
     const token = localStorage.getItem("token");

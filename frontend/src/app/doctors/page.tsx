@@ -26,7 +26,7 @@ export default function DoctorsPage() {
   const [specialty, setSpecialty] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(true);
-  const [bookingDoctor, setBookingDoctor] = useState(null);
+  const [bookingDoctor, setBookingDoctor] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [booking, setBooking] = useState(false);
