@@ -138,11 +138,11 @@ export default function DoctorsPage() {
               <p className="mb-4 text-xs text-teal-300">{bookingDoctor.specialty}</p>
               {bookingDoctor.address && <p className="mb-4 text-xs tt-slate-500">📍 {bookingDoctor.address}</p>}
               <div className="mb-4">
-                abel className="mb-1.5 block text-xs font-medium text-slate-400">Select Date</label>
+                <label className="mb-1.5 block text-xs font-medium text-slate-400">Select Date</label>
                 <input type="date" min={today} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500" />
               </div>
               <div className="mb-6">
-                abel className="mb-2 block text-xs font-medium text-slate-400">Select Time Slot</label>
+                <label className="mb-2 block text-xs font-medium text-slate-400">Select Time Slot</label>
                 <div className="flex flex-wrap gap-2">
                   {timeSlots.map((t) => (
                     <button key={t} onClick={() => setSelectedTime(t)} className={"rounded-lg border px-2.5 py-1.5 text-xs transition " + (selectedTime === t ? "border-teal-500 bg-teal-500/20 text-teal-300" : "border-slate-700 text-slate-400 hover:border-teal-600")}>

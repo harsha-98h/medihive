@@ -65,7 +65,7 @@ export default function RegisterPage() {
         <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-6 shadow-2xl backdrop-blur">
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              abel className="mb-2 block text-xs font-medium text-slate-300">I am a</label>
+              <label className="mb-2 block text-xs font-medium text-slate-300">I am a</label>
               <div className="grid grid-cols-3 gap-2">
                 {roles.map((r) => (
                   <button
@@ -90,7 +90,7 @@ export default function RegisterPage() {
 
             <div className="flex gap-3">
               <div className="flex-1">
-                abel className="mb-1.5 block text-xs font-medium text-slate-300">First name</label>
+                <label className="mb-1.5 block text-xs font-medium text-slate-300">First name</label>
                 <input
                   type="text"
                   required
@@ -101,7 +101,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="flex-1">
-                abel className="mb-1.5 block text-xs font-medium text-slate-300">Last name</label>
+                <label className="mb-1.5 block text-xs font-medium text-slate-300">Last name</label>
                 <input
                   type="text"
                   required
@@ -114,7 +114,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              abel className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
+              <label className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
               <input
                 type="email"
                 required
@@ -126,7 +126,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              abel className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
+              <label className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
               <input
                 type="password"
                 required

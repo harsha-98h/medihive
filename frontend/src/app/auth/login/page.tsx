@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-6 shadow-2xl backdrop-blur">
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              abel className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
+              <label className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
               <input
                 type="email"
                 requi                value={email}
@@ -77,7 +77,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              abel className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
+              <label className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
               <input
                 type="password"
                 required
