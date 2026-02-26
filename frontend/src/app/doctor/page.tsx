@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 export default function DoctorDashboard() {
   const router = useRouter();
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);

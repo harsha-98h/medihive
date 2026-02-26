@@ -7,8 +7,8 @@ import { api } from "@/lib/api";
 export default function AdminPanel() {
   const router = useRouter();
   const [stats, setStats] = useState<any>(null);
-  const [users, setUsers] = useState([]);
-  const [appointments, setAppointments] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [tab, setTab] = useState("overview");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

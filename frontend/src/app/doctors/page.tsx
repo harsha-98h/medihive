@@ -20,8 +20,8 @@ type Doctor = {
 export default function DoctorsPage() {
   const router = useRouter();
   const [userRole, setUserRole] = useState("");
-  const [doctors, setDoctors] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [filtered, setFiltered] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [city, setCity] = useState("");
