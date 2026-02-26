@@ -230,7 +230,7 @@ export const markAppointmentDone = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Not your appointment' });
     }
     await pool.query(
-      "UPDATE appointments SET status = 'done', updated_at = NOW() WHERE appointment_id = $1",
+      "UPDATE appointments SET status = 'completed', updated_at = NOW() WHERE appointment_id = $1",
       [id]
     );
     return res.json({ message: 'Appointment marked as done' });

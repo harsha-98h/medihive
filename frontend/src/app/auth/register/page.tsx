@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { useState } from "react";
@@ -15,6 +12,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState("");
   const [role, setRole] = useState("patient");
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +26,7 @@ export default function RegisterPage() {
         role,
         first_name: firstName,
         last_name: lastName,
+        date_of_birth: dob || undefined,
       });
       const { token, user } = res.data;
       localStorage.setItem("token", token);
@@ -46,26 +45,24 @@ export default function RegisterPage() {
   };
 
   const roles = [
-    { value: "patient", label: "Patient", icon: "👤", desc: "Book appointments", color: "teal" },
-    { value: "doctor", label: "Doctor", icon: "🩺", desc: "Manage visits", color: "blue" },
-    { value: "admin", label: "Admin", icon: "⚙️", desc: "Full access", color: "purple" },
+    { value: "patient", label: "Patient", icon: "👤", desc: "Book appointments" },
+    { value: "doctor", label: "Doctor", icon: "🩺", desc: "Manage visits" },
+    { value: "admin", label: "Admin", icon: "⚙️", desc: "Full access" },
   ];
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-2xl-500/10 text-3xl">
-            🏥
-          </div>
+          <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10 text-3xl">🏥</div>
           <h1 className="text-2xl font-bold text-slate-50">Create your account</h1>
-          <p className="mt-1 text-sm text-slate-400">Join MediHive today</p>
+          <p className="mt-1 text-sm text-slate-MediHive today</p>
         </div>
 
         <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-6 shadow-2xl backdrop-blur">
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="mb-2 block text-xs font-medium text-slate-300">I am a</label>
+              abel className="mb-2 block text-xs font-medium text-slate-300">I am a</label>
               <div className="grid grid-cols-3 gap-2">
                 {roles.map((r) => (
                   <button
@@ -75,7 +72,7 @@ export default function RegisterPage() {
                     className={"rounded-xl border p-2.5 text-center text-xs transition " + (
                       role === r.value
                         ? r.value === "patient" ? "border-teal-500 bg-teal-500/10 text-teal-300"
-                        : r.value === "ctor" ? "border-blue-500 bg-blue-500/10 text-blue-300"
+                        : r.value === "doctor" ? "border-blue-500 bg-blue-500/10 text-blue-300"
                         : "border-purple-500 bg-purple-500/10 text-purple-300"
                         : "border-slate-700 text-slate-400 hover:border-slate-600"
                     )}
@@ -90,7 +87,7 @@ export default function RegisterPage() {
 
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="mb-1.5 block text-xs font-medium text-slate-300">First name</label>
+                abel className="mb-1.5 block text-xs font-medium text-slate-300">First name</label>
                 <input
                   type="text"
                   required
@@ -101,7 +98,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="flex-1">
-                <label className="mb-1.5 block text-xs font-medium text-slate-300">Last name</label>
+                abel className="mb-1.5 block text-xs font-medium text-slate-300">Last name</label>
                 <input
                   type="text"
                   required
@@ -113,8 +110,21 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {role === "patient" && (
+              <div>
+                abel className="mb-1.5 block text-xs font-medium text-slate-300">Date of birth</label>
+                <input
+                  type="date"
+                  required
+                  value={dob}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDob(e.target.value)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition"
+                />
+              </div>
+            )}
+
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
+              abel className="mb-1.5 block text-xs font-medium text-slate-300">Email address</label>
               <input
                 type="email"
                 required
@@ -126,7 +136,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
+              abel className="mb-1.5 block text-xs font-medium text-slate-300">Password</label>
               <input
                 type="password"
                 required
@@ -140,7 +150,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-teal-50-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-teal-500/20 hover:from-teal-400 hover:to-teal-300 disabled:opacity-50 transition"
+              className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-teal-400 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-teal-500/20 hover:from-teal-400 hover:to-teal-300 disabled:opacity-50 transition"
             >
               {loading ? "Creating account..." : "Create account"}
             </button>
@@ -148,7 +158,7 @@ export default function RegisterPage() {
 
           <p className="mt-4 text-center text-xs text-slate-400">
             Already have an account?{" "}
-            <Link href="/auth/login" className="font-medium text-teal-400 hover:text-teal-300">
+            <Link href="/auth/login" className="font-medium text-txt-teal-300">
               Sign in
             </Link>
           </p>

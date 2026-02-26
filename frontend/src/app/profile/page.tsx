@@ -59,7 +59,7 @@ export default function ProfilePage() {
 
   const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
   const scheduled = appointments.filter((a: any) => a.status === "scheduled").length;
-  const done = appointments.filter((a: any) => a.status === "done").length;
+  const done = appointments.filter((a: any) => a.status === "completed").length;
   const cancelled = appointments.filter((a: any) => a.status === "canceled").length;
 
   if (loading) return <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50"><p className="text-slate-400">Loading...</p></main>;
@@ -143,7 +143,7 @@ export default function ProfilePage() {
                   <p className="font-medium text-slate-100">
                     {a.doctor_first_name ? "Dr. " + a.doctor_first_name + " " + a.doctor_last_name : a.patient_first_name + " " + a.patient_last_name}
                   </p>
-                  <span className={"rounded-full px-2 py-0.5 text-xs " + (a.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : a.status === "done" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
+                  <span className={"rounded-full px-2 py-0.5 text-xs " + (a.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : a.status === "completed" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
                     {a.status}
                   </span>
                 </div>

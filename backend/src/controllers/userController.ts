@@ -8,7 +8,7 @@ export const getMe = async (req: Request, res: Response) => {
 
     if (user.role === "patient") {
       const result = await pool.query(
-        `SELECT p.first_name, p.last_name, p.date_of_birth, p.phone_number,
+        `SELECT p.first_name, p.last_name, p.phone_number, p.address,
                 u.email, u.role, u.user_id
          FROM patient_profiles p
          JOIN users u ON p.user_id = u.user_id
@@ -43,7 +43,7 @@ export const updateMe = async (req: Request, res: Response) => {
   try {
     const user = req.user;
     if (!user) return res.status(401).json({ message: "Unauthorized" });
-    const { first_name, last_name, phone_number } = req.body;
+    const { first_name, last_name, phone_number, address } = req.body;
 
     if (user.role === "patient") {
       await pool.query(
@@ -51,9 +51,10 @@ export const updateMe = async (req: Request, res: Response) => {
           first_name = COALESCE($1, first_name),
           last_name = COALESCE($2, last_name),
           phone_number = COALESCE($3, phone_number),
+          address = COALESCE($4, address),
           updated_at = NOW()
-         WHERE user_id = $4`,
-        [first_name, last_name, phone_number, user.user_id]
+         WHERE user_id = $5`,
+        [first_name || null, last_name || null, phone_number || null, address || null, user.user_id]
       );
     } else if (user.role === "doctor") {
       await pool.query(
@@ -61,9 +62,10 @@ export const updateMe = async (req: Request, res: Response) => {
           first_name = COALESCE($1, first_name),
           last_name = COALESCE($2, last_name),
           phone_number = COALESCE($3, phone_number),
+          address = COALESCE($4, address),
           updated_at = NOW()
-         WHERE user_id = $4`,
-        [first_name, last_name, phone_number, user.user_id]
+         WHERE user_id = $5`,
+        [first_name || null, last_name || null, phone_number || null, address || null, user.user_id]
       );
     }
 

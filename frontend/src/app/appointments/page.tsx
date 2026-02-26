@@ -182,7 +182,7 @@ export default function AppointmentsPage() {
                   </button>
                 )}
 
-                {appt.status === "done" && (
+                {appt.status === "completed" && (
                   <div className="mt-4 border-t border-slate-800 pt-3">
                     {ratingApptId !== appt.appointment_id ? (
                       <button

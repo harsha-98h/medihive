@@ -54,7 +54,7 @@ export default function DoctorDashboard() {
 
   const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
   const scheduled = appointments.filter((a: any) => a.status === "scheduled");
-  const done = appointments.filter((a: any) => a.status === "done");
+  const done = appointments.filter((a: any) => a.status === "completed");
   const cancelled = appointments.filter((a: any) => a.status === "canceled");
 
   return (
@@ -89,7 +89,7 @@ export default function DoctorDashboard() {
                     <p className="text-sm font-medium text-slate-100">{appt.patient_first_name} {appt.patient_last_name}</p>
                     <p className="text-xs text-slate-400">{formatDate(appt.appointment_time)}</p>
                   </div>
-                  <span className={"rounded-full px-3 py-1 text-xs font-medium " + (appt.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : appt.status === "done" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
+                  <span className={"rounded-full px-3 py-1 text-xs font-medium " + (appt.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : appt.status === "completed" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
                     {appt.status}
                   </span>
                 </div>
