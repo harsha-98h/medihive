@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { api } from "@/lib/api";
 
 type Doctor = {
@@ -70,7 +71,7 @@ export default function DoctorsPage() {
 
   const handleBookSubmit = async () => {
     if (!bookingDoctor || !selectedDate || !selectedTime) return;
-    setError(null); setSuccess(null); setBooking(true);
+    setBooking(true);
     const token = localStorage.getItem("token");
     if (!token) { setError("You must be logged in to book."); setBooking(false); return; }
     try {
@@ -78,6 +79,7 @@ export default function DoctorsPage() {
       await api.post("/appointments", { doctor_id: bookingDoctor.doctor_id, appointment_time: appointmentTime.toISOString() }, { headers: { Authorization: "Bearer " + token } });
       setSuccess(`Appointment booked with Dr. ${bookingDoctor.first_name} ${bookingDoctor.last_name}!`);
       setBookingDoctor(null); setSelectedDate(""); setSelectedTime("");
+      toast.success("Appointment booked successfully!");
       router.push("/appointments");
     } catch (err) {
       setError(err?.response?.data?.message || "Booking failed.");

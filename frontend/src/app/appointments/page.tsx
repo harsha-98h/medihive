@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
 type Appointment = {
@@ -58,7 +59,7 @@ export default function AppointmentsPage() {
       );
       await fetchAppointments();
     } catch {
-      setError("Failed to cancel appointment.");
+      toast.error("Failed to cancel appointment.");
     } finally {
       setCancellingId(null);
     }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
 export default function DoctorDashboard() {
@@ -33,9 +34,9 @@ export default function DoctorDashboard() {
     setMarkingId(id); setError(null); setSuccess(null);
     try {
       await api.patch("/appointments/" + id + "/done", {}, { headers: { Authorization: "Bearer " + token } });
-      setSuccess("Appointment marked as done.");
+      toast.success("Appointment marked as done.");
       await fetchAppointments();
-    } catch { setError("Failed to mark as done."); }
+    } catch { toast.error("Failed to mark as done."); }
     finally { setMarkingId(null); }
   };
 
@@ -45,9 +46,9 @@ export default function DoctorDashboard() {
     setCancellingId(id); setError(null); setSuccess(null);
     try {
       await api.patch("/appointments/" + id + "/cancel", {}, { headers: { Authorization: "Bearer " + token } });
-      setSuccess("Appointment cancelled.");
+      toast.success("Appointment cancelled.");
       await fetchAppointments();
-    } catch { setError("Failed to cancel."); }
+    } catch { toast.error("Failed to cancel."); }
     finally { setCancellingId(null); }
   };
 
