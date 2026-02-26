@@ -74,7 +74,7 @@ export default function Navbar() {
                       {role}
                     </span>
                   </div>
-                  <Link hre"/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">
+                  <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">
                     <span>👤</span> Profile
                   </Link>
                   {role === "patient" && (
