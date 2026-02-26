@@ -135,7 +135,7 @@ export default function AppointmentsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {appointments.map((appt) => (
+            {appointments.map((appt: any) => (
               <motion.div
                 key={appt.appointment_id}
                 initial={{ opacity: 0, y: 20 }}

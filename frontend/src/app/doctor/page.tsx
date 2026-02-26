@@ -28,7 +28,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => { fetchAppointments(); }, []);
 
-  const handleMarkDone = async (id) => {
+  const handleMarkDone = async (id: number) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     setMarkingId(id); setError(null); setSuccess(null);
@@ -40,7 +40,7 @@ export default function DoctorDashboard() {
     finally { setMarkingId(null); }
   };
 
-  const handleCancel = async (id) => {
+  const handleCancel = async (id: number) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     setCancellingId(id); setError(null); setSuccess(null);
@@ -53,9 +53,9 @@ export default function DoctorDashboard() {
   };
 
   const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
-  const scheduled = appointments.filter((a) => a.status === "scheduled");
-  const done = appointments.filter((a) => a.status === "done");
-  const cancelled = appointments.filter((a) => a.status === "canceled");
+  const scheduled = appointments.filter((a: any) => a.status === "scheduled");
+  const done = appointments.filter((a: any) => a.status === "done");
+  const cancelled = appointments.filter((a: any) => a.status === "canceled");
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">
@@ -82,7 +82,7 @@ export default function DoctorDashboard() {
           <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-6 text-center text-sm text-slate-400">No appointments yet.</div>
         ) : (
           <div className="space-y-4">
-            {appointments.map((appt) => (
+            {appointments.map((appt: any) => (
               <motion.div key={appt.appointment_id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>

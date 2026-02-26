@@ -59,13 +59,13 @@ export default function DoctorsPage() {
           d.specialty.toLowerCase().includes(q)
       );
     }
-    if (specialty) results = results.filter((d) => d.specialty === specialty);
-    if (city) results = results.filter((d) => d.address?.toLowerCase().includes(city.toLowerCase()));
+    if (specialty) results = results.filter((d: any) => d.specialty === specialty);
+    if (city) results = results.filter((d: any) => d.address?.toLowerCase().includes(city.toLowerCase()));
     setFiltered(results);
   }, [search, specialty, city, doctors]);
 
-  const specialties = [...new Set(doctors.map((d) => d.specialty))].sort();
-  const cities = [...new Set(doctors.map((d) => {
+  const specialties = [...new Set(doctors.map((d: any) => d.specialty))].sort();
+  const cities = [...new Set(doctors.map((d: any) => {
     if (!d.address) return null;
     const p = d.address.split(",");
     return p[p.length - 1].trim();
@@ -113,11 +113,11 @@ export default function DoctorsPage() {
           />
           <select value={specialty} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSpecialty(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
             <option value="">All specialties</option>
-            {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
+            {specialties.map((s: any) => <option key={s} value={s}>{s}</option>)}
           </select>
           <select value={city} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCity(e.target.value)} className="rounded-xl border border-slate-700/50 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-50 outline-none focus:border-teal-500 transition">
             <option value="">All cities</option>
-            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+            {cities.map((c: any) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
@@ -144,7 +144,7 @@ export default function DoctorsPage() {
               <div className="mb-6">
                 <label className="mb-2 block text-xs font-medium text-slate-400">Select Time Slot</label>
                 <div className="flex flex-wrap gap-2">
-                  {timeSlots.map((t) => (
+                  {timeSlots.map((t: any) => (
                     <button key={t} onClick={() => setSelectedTime(t)} className={"rounded-lg border px-2.5 py-1.5 text-xs transition " + (selectedTime === t ? "border-teal-500 bg-teal-500/20 text-teal-300" : "border-slate-700 text-slate-400 hover:border-teal-600")}>
                       {t}
                     </button>
@@ -173,7 +173,7 @@ export default function DoctorsPage() {
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2">
-            {filtered.map((doc) => (
+            {filtered.map((doc: any) => (
               <div key={doc.doctor_id} className="group rounded-2xl border border-slate-800/50 bg-slate-900/60 p-5 shadow-lg transition hover:border-teal-500/30 hover:shadow-teal-500/5">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">

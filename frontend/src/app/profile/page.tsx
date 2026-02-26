@@ -58,9 +58,9 @@ export default function ProfilePage() {
   };
 
   const formatDate = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
-  const scheduled = appointments.filter((a) => a.status === "scheduled").length;
-  const done = appointments.filter((a) => a.status === "done").length;
-  const cancelled = appointments.filter((a) => a.status === "canceled").length;
+  const scheduled = appointments.filter((a: any) => a.status === "scheduled").length;
+  const done = appointments.filter((a: any) => a.status === "done").length;
+  const cancelled = appointments.filter((a: any) => a.status === "canceled").length;
 
   if (loading) return <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50"><p className="text-slate-400">Loading...</p></main>;
 
@@ -137,7 +137,7 @@ export default function ProfilePage() {
           <p className="text-slate-400 text-sm">No appointments yet.</p>
         ) : (
           <div className="space-y-3">
-            {appointments.map((a) => (
+            {appointments.map((a: any) => (
               <div key={a.appointment_id} className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm">
                 <div className="flex items-center justify-between">
                   <p className="font-medium text-slate-100">
