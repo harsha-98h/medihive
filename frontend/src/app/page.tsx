@@ -1,184 +1,125 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { api } from "@/lib/api";
 
-type User = {
-  user_id: string;
-  email: string;
-  role: "patient" | "doctor" | "admin";
-};
-
-type PatientAppointment = {
+type Appointment = {
   appointment_id: number;
-  appointment_time: string;
-  status: string;
   doctor_first_name: string;
   doctor_last_name: string;
   specialty: string;
-};
-
-type DoctorAppointment = {
-  appointment_id: number;
   appointment_time: string;
   status: string;
-  patient_first_name: string;
-  patient_last_name: string;
 };
 
 export default function HomePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [upcoming, setUpcoming] = useState<Appointment[]>([]);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try { setUser(JSON.parse(stored)); } catch { setUser(null); }
-    }
     const token = localStorage.getItem("token");
-    if (token) {
-      api.get("/appointments", { headers: { Authorization: "Bearer " + token } })
-        .then((res) => setAppointments(res.data.appointments || []))
-        .catch(() => {});
-    }
+    const r = localStorage.getItem("role");
+    setRole(r);
+    if (!token || r !== "patient") return;
+    api.get("/appointments", { headers: { Authorization: "Bearer " + token } })
+      .then((res) => {
+        const appts = (res.data.appointments || []).filter((a: Appointment) => a.status === "scheduled");
+        setUpcoming(appts.slice(0, 3));
+      })
+      .catch(() => {});
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/auth/login";
-  };
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 
-  const upcoming = appointments.filter((a) => a.status === "scheduled");
-  const past = appointments.filter((a) => a.status !== "scheduled");
-
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 text-2xl font-semibold">
-          {user?.role === "doctor" ? "Doctor Dashboard" : "MediHive Dashboard"}
-        </h1>
-        <p className="mb-6 text-sm text-slate-400">
-          {user?.role === "doctor"
-            ? "Manage your upcoming patient appointments."
-            : "Welcome back. Here is your health summary."}
-        </p>
-
-        {user ? (
-          <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <div>
-              <p className="text-sm text-slate-300">Signed in as</p>
-              <p className="text-lg font-medium">{user.email}</p>
-              <p className="text-xs text-slate-400">Role: {user.role}</p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="rounded-lg border border-slate-700 px-3 py-1 text-xs text-slate-200 hover:border-red-400 hover:text-red-300"
-            >
-              Log out
-            </button>
-          </div>
-        ) : (
-          <div className="mb-6 rounded-xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
-            You are not signed in.{" "}
-            <a href="/auth/login" className="text-teal-400 underline">Go to login</a>.
-          </div>
-        )}
-
-        {user?.role === "doctor" ? (
-          <div className="space-y-4">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <h2 className="mb-4 text-sm font-semibold text-slate-100">
-                Upcoming Patient Appointments ({upcoming.length})
-              </h2>
-              {upcoming.length === 0 ? (
-                <p className="text-xs text-slate-400">No upcoming appointments.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {upcoming.map((a: DoctorAppointment) => (
-                    <li className="rounded-lg bg-slate-800/60 px-4 py-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-slate-100">
-                            {a.patient_first_name} {a.patient_last_name}
-                          </p>
-                          <p className="text-xs text-teal-300">{formatDate(a.appointment_time)}</p>
-                        </div>
-                        <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">
-                          scheduled
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            {past.length > 0 && (
-              <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-                <h2 className="mb-4 text-sm font-semibold text-slate-100">
-                  Past Appointments ({past.length})
-                </h2>
-                <ul className="space-y-3">
-                  {past.map((a: DoctorAppointment) => (
-                    <li className="rounded-lg bg-slate-800/60 px-4 py-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-slate-100">
-                            {a.patient_first_name} {a.patient_last_name}
-                          </p>
-                          <p className="text-xs text-slate-400">{formatDate(a.appointment_time)}</p>
-                        </div>
-                        <span className="rounded-full bg-slate-700 px-3 py-1 text-xs text-slate-300">
-                          {a.status}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+    <main className="min-h-screen bg-slate-950 text-slate-50">
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mb-12 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-slate-50">
+            Your health, <span className="text-teal-400">simplified</span>
+          </h1>
+          <p className="mb-8 text-lg text-slate-400">
+            Book doctor appointments instantly. View your history. Stay on top of your health.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/doctors" className="rounded-full bg-teal-500 px-6 py-2.5 text-sm font-medium text-slate-950 hover:bg-teal-400">
+              Find a doctor
+            </Link>
+            {!role && (
+              <Link href="/auth/register" className="rounded-full border border-slate-700 px-6 py-2.5 text-sm text-slate-200 hover:bg-slate-800">
+                Create account
+              </Link>
+            )}
+            {role === "patient" && (
+              <Link href="/appointments" className="rounded-full border border-slate-700 px-6 py-2.5 text-sm text-slate-200 hover:bg-slate-800">
+                My appointments
+              </Link>
+            )}
+            {role === "doctor" && (
+              <Link href="/doctor" className="rounded-full border border-slate-700 px-6 py-2.5 text-sm text-slate-200 hover:bg-slate-800">
+                Go to dashboard
+              </Link>
+            )}
+            {role === "admin" && (
+              <Link href="/admin" className="rounded-full border border-slate-700 px-6 py-2.5 text-sm text-slate-200 hover:bg-slate-800">
+                Admin panel
+              </Link>
             )}
           </div>
-        ) : (
-          <section className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <h2 className="mb-3 text-sm font-semibold text-slate-100">Upcoming Appointments</h2>
-              {upcoming.length === 0 ? (
-                <p className="text-xs text-slate-400">
-                  No upcoming appointments.{" "}
-                  <a href="/doctors" className="text-teal-400 underline">Book one</a>.
-                </p>
-              ) : (
-                <ul className="space-y-2">
-                  {upcoming.slice(0, 3).map((a: PatientAppointment) => (
-                    <li className="rounded-lg bg-slate-800/60 px-3 py-2 text-xs">
-                      <p className="font-medium text-slate-100">Dr. {a.doctor_first_name} {a.doctor_last_name}</p>
-                      <p className="text-slate-400">{a.specialty}</p>
-                      <p className="text-teal-300">{formatDate(a.appointment_time)}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <a href="/appointments" className="mt-3 block text-xs text-teal-400 underline">
-                View all appointments
-              </a>
+        </div>
+
+        <div className="mb-12 grid gap-6 md:grid-cols-3">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div className="mb-3 text-2xl">🩺</div>
+            <h3 className="mb-2 text-sm font-semibold text-slate-100">Find specialists</h3>
+            <p className="text-xs text-slate-400">Browse verified doctors by specialty and city. See ratings, hospital info, and contact details before booking.</p>
+          </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div className="mb-3 text-2xl">📅</div>
+            <h3 className="mb-2 text-sm font-semibold text-slate-100">Book instantly</h3>
+            <p className="text-xs text-slate-400">Pick a date and time that works for you. Get a confirmation email right away.</p>
+          </div>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div className="mb-3 text-2xl">⭐</div>
+            <h3 className="mb-2 text-sm font-semibold text-slate-100">Rate your experience</h3>
+            <p className="text-xs text-slate-400">After your visit, leave a rating and help others find the best doctors.</p>
+          </div>
+        </div>
+
+        {role === "patient" && upcoming.length > 0 && (
+          <div className="rounded-2xl bo border-slate-800 bg-slate-900/70 p-6">
+            <h2 className="mb-4 text-sm font-semibold text-slate-100">Your upcoming appointments</h2>
+            <div className="space-y-3">
+              {upcoming.map((a) => (
+                <div key={a.appointment_id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-800/60 px-4 py-3">
+                  <div>
+                    <p className="text-sm font-medium text-slate-100">Dr. {a.doctor_first_name} {a.doctor_last_name}</p>
+                    <p className="text-xs text-slate-400">{a.specialty} · {formatDate(a.appointment_time)}</p>
+                  </div>
+                  <span className="rounded-full bg-teal-500/10 px-3 py-1 text-xs text-teal-300">scheduled</span>
+                </div>
+              ))}
             </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <h2 className="mb-2 text-sm font-semibold text-slate-100">Find Doctors</h2>
-              <p className="text-xs text-slate-400">Browse our network of verified doctors.</p>
-              <a href="/doctors" className="mt-3 block text-xs text-teal-400 underline">Browse doctors</a>
-            </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <h2 className="mb-2 text-sm font-semibold text-slate-100">Medical History</h2>
-              <p className="text-xs text-slate-400">Past visits and prescriptions will show up here.</p>
-            </div>
-          </section>
+           <Link href="/appointments" className="mt-4 inline-block text-xs text-teal-400 underline hover:text-teal-300">
+              View all appointments
+            </Link>
+          </div>
         )}
-      </div>
+
+        {!role && (
+          <div className="rounded-2xl border border-teal-500/20 bg-teal-500/5 p-6 text-center">
+            <h2 className="mb-2 text-sm font-semibold text-slate-100">Get started today</h2>
+            <p className="mb-4 text-xs text-slate-400">Create a free account to book appointments, track your visits, and rate doctors.</p>
+            <div className="flex justify-center gap-3">
+              <Link href="/auth/register" className="rounded-full bg-teal-500 px-5 py-2 text-xs font-medium text-slate-950 hover:bg-teal-400">Register</Link>
+              <Link href="/auth/login" className="rounded-full border border-slate-700 px-5 py-2 text-xs text-slate-300 hover:bg-slate-800">Sign in</Link>
+            </div>
+          </div>
+        )}
+      </section>
     </main>
   );
 }
-// doctor dashboard update
+

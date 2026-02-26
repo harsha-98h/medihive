@@ -1,154 +1,128 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
 
-type Stats = {
-  total_users: number;
-  total_doctors: number;
-  total_appointments: number;
-  scheduled_appointments: number;
-};
-
-type User = {
-  user_id: number;
-  email: string;
-  role: string;
-  created_at: string;
-};
-
-type Appointment = {
-  appointment_id: number;
-  appointment_time: string;
-  status: string;
-  patient_first_name: string;
-  patient_last_name: string;
-  doctor_first_name: string;
-  doctor_last_name: string;
-  specialty: string;
-};
-
-export default function AdminPage() {
+export default function AdminPanel() {
   const router = useRouter();
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [tab, setTab] = useState<"stats" | "users" | "appointments">("stats");
-  const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [tab, setTab] = useState("overview");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-    if (!token || !user) { router.push("/auth/login"); return; }
-    const parsed = JSON.parse(user);
-    if (parsed.role !== "admin") { router.push("/"); return; }
-
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") { router.push("/auth/login"); return; }
     const headers = { Authorization: "Bearer " + token };
-    api.get("/admin/stats", { headers }).then(r => setStats(r.data)).catch(() => setError("Failed to load stats"));
-    api.get("/admin/users", { headers }).then(r => setUsers(r.data.users)).catch(() => {});
-    api.get("/admin/appointments", { headers }).then(r => setAppointments(r.data.appointments)).catch(() => {});
+    Promise.all([
+      api.get("/admin/stats", { headers }),
+      api.get("/admin/users", { headers }),
+      api.get("/admin/appointments", { headers }),
+    ])
+      .then(([s, u, a]) => {
+        setStats(s.data);
+        setUsers(u.data.users || []);
+        setAppointments(a.data.appointments || []);
+      })
+      .catch(() => setError("Failed to load admin data."))
+      .finally(() => setLoading(false));
   }, []);
 
-  const formatDate = (iso: string) =>
-    new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+  const formatDate = (iso) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="mb-2 text-2xl font-semibold">Admin Panel</h1>
-        <p className="mb-6 text-sm text-slate-400">Manage all users, doctors and appointments.</p>
+      <div className="mx-auto max-w-5xl">
+        <h1 className="mb-1 text-2xl font-semibold">Admin Panel</h1>
+        <p className="mb-6 text-sm text-slate-400">Manage users, doctors, and appointments.</p>
 
         {error && <div className="mb-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</div>}
 
-        <div className="mb-6 flex gap-2">
-          {(["stats", "users", "appointments"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={"rounded-lg px-4 py-2 text-sm font-medium capitalize transition " + (tab === t ? "bg-teal-500 text-slate-950" : "border border-slate-700 text-slate-400 hover:text-slate-200")}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-
-        {tab === "stats" && stats && (
-          <div className="grid gap-4 md:grid-cols-4">
-            {[
-              { label: "Total Users", value: stats.total_users },
-              { label: "Total Doctors", value: stats.total_doctors },
-              { label: "Total Appointments", value: stats.total_appointments },
-              { label: "Scheduled", value: stats.scheduled_appointments }
-            ].map((s) => (
-              <div key={s.label} className="rounded-xl border border-slate-800 bg-slate-900/70 p-5 text-center">
-                <p className="text-3xl font-bold text-teal-400">{s.value}</p>
-                <p className="mt-1 text-sm text-slate-400">{s.label}</p>
+        {loading ? (
+          <p className="text-slate-400">Loading...</p>
+        ) : (
+          <>
+            {stats && (
+              <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-center">
+                  <p className="text-2xl font-bold text-teal-400">{stats.total_users}</p>
+                  <p className="text-xs text-slate-400">Total Users</p>
+                </div>
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-center">
+                  <p className="text-2xl font-bold text-blue-400">{stats.total_doctors}</p>
+                  <p className="text-xs text-slate-400">Doctors</p>
+                </div>
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-center">
+                  <p className="text-2xl font-bold text-purple-400">{stats.total_appointments}</p>
+                  <p className="text-xs text-slate-400">Appointments</p>
+                </div>
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-center">
+                  <p className="text-2xl font-bold text-yellow-400">{stats.scheduled_appointments}</p>
+                  <p className="text-xs text-slate-400">Scheduled</p>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {tab === "users" && (
-          <div className="rounded-xl border border-slate-800 bg-slate-900/70 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-800 bg-slate-900">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">ID</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Email</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Role</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
+            <div className="mb-4 flex gap-2 text-xs">
+              {["overview", "users", "appointments"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={"rounded-full px-4 py-1.5 font-medium transition " + (tab === t ? "bg-teal-500 text-slate-950" : "border border-slate-700 text-slate-300 hover:bg-slate-800")}
+                >
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {tab === "overview" && (
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 text-sm text-slate-300">
+                <p>Welcome to the MediHive admin panel.</p>
+                <p className="mt-2 text-slate-400">Use the tabs above to manage users and appointments.</p>
+              </div>
+            )}
+
+            {tab === "users" && (
+              <div className="space-y-3">
                 {users.map((u) => (
-                  <tr key={u.user_id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                    <td className="px-4 py-3 text-slate-400">#{u.user_id}</td>
-                    <td className="px-4 py-3">{u.email}</td>
-                    <td className="px-4 py-3">
-                      <span className={"rounded-full px-2 py-0.5 text-xs " + (u.role === "doctor" ? "bg-blue-500/10 text-blue-300" : u.role === "admin" ? "bg-purple-500/10 text-purple-300" : "bg-teal-500/10 text-teal-300")}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-400">{formatDate(u.created_at)}</td>
-                  </tr>
+                  <div key={u.user_id} className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-slate-100">{u.email}</p>
+                      <p className="text-xs text-slate-400">ID: {u.user_id} · Joined: {formatDate(u.created_at)}</p>
+                    </div>
+                    <span className={"rounded-full px-3 py-0.5 text-xs font-medium " + (u.role === "doctor" ? "bg-blue-500/10 text-blue-300" : u.role === "admin" ? "bg-purple-500/10 text-purple-300" : "bg-teal-500/10 text-teal-300")}>
+                      {u.role}
+                    </span>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              </div>
+            )}
 
-        {tab === "appointments" && (
-          <div className="rounded-xl border border-slate-800 bg-slate-900/70 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-800 bg-slate-900">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">ID</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Patient</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Doctor</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Time</th>
-                  <th className="px-4 py-3 text-left text-xs text-slate-400">Status</th>
-                </tr>
-              </thead>
-              <tbody>
+            {tab === "appointments" && (
+              <div className="space-y-3">
                 {appointments.map((a) => (
-                  <tr key={a.appointment_id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                    <td className="px-4 py-3 text-slate-400">#{a.appointment_id}</td>
-                    <td className="px-4 py-3">{a.patient_first_name} {a.patient_last_name}</td>
-                    <td className="px-4 py-3">Dr. {a.doctor_first_name} {a.doctor_last_name}<br/><span className="text-xs text-slate-400">{a.specialty}</span></td>
-                    <td className="px-4 py-3 text-slate-400">{formatDate(a.appointment_time)}</td>
-                    <td className="px-4 py-3">
-                      <span className={"rounded-full px-2 py-0.5 text-xs " + (a.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : "bg-red-500/10 text-red-400")}>
+                  <div key={a.appointment_id} className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-slate-100">
+                        {a.patient_first_name} {a.patient_last_name} → Dr. {a.doctor_first_na {a.doctor_last_name}
+                      </p>
+                      <span className={"rounded-full px-2 py-0.5 text-xs " + (a.status === "scheduled" ? "bg-teal-500/10 text-teal-300" : a.status === "done" ? "bg-green-500/10 text-green-300" : "bg-red-500/10 text-red-400")}>
                         {a.status}
                       </span>
-                    </td>
-                  </tr>
+                    </div>
+                    <p className="mt-0.5 text-xs text-slate-400">{a.specialty} · {formatDate(a.appointment_time)}</p>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>
   );
 }
+

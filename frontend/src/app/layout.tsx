@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,32 +19,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-950 text-slate-50`}>
-        <header className="border-b border-slate-800 bg-slate-950/80 px-6 py-3">
-          <div className="mx-auto flex max-w-5xl items-center justify-between">
-            <a href="/" className="text-lg font-bold text-teal-400">
-              MediHive
-            </a>
-            <div className="flex items-center gap-4">
-              <a href="/doctors" className="text-sm text-slate-300 hover:text-teal-300">
-                Doctors
-              </a>
-              <a href="/appointments" className="text-sm text-slate-300 hover:text-teal-300">
-                Appointments
-              </a>
-              <a href="/auth/register" className="text-sm text-slate-300 hover:text-teal-300">
-                Register
-              </a>
-              <a
-                href="/auth/login"
-                className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-200 hover:border-teal-400 hover:text-teal-300"
-              >
-                Sign in
-              </a>
-            </div>
-          </div>
-        </header>
+        <Navbar />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "#1e293b",
+              color: "#f8fafc",
+              border: "1px solid #334155",
+              fontSize: "13px",
+            },
+            success: { iconTheme: { primary: "#14b8a6", secondary: "#f8fafc" } },
+            error: { iconTheme: { primary: "#f87171", secondary: "#f8fafc" } },
+          }}
+        />
         {children}
       </body>
     </html>
   );
 }
+

@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// behind Railway / proxies
+// IMPORTANT: trust proxy (Railway, Vercel, etc.)
 app.set("trust proxy", 1);
 
 const allowedOrigins = [
@@ -42,9 +42,11 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(compression());
 
+// rate limiter AFTER trust proxy
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
+  // be tolerant if X-Forwarded-For is weird
   standardHeaders: true,
   legacyHeaders: false,
 });
